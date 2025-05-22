@@ -1,17 +1,22 @@
 package SE4487.project.FoodOrderingSystem.model;
 
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Restaurant {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String region;
 	private String rating;
 	private String deliveryTime;
+
+	public Restaurant() {
+	}
 
 	public Restaurant(String name, String region, String rating, String deliveryTime) {
 		this.name = name;
