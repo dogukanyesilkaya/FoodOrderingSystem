@@ -24,7 +24,8 @@ public class FoodOrderingService {
 	}
 
 	public ResponseEntity<Restaurant> saveRestaurant(Restaurant restaurant) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
+		Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedRestaurant);
 	}
 
 }
