@@ -26,7 +26,8 @@ public class RestaurantMenu {
 	public RestaurantMenu() {
 	}
 
-	public RestaurantMenu(String name, String category, String description, String price) {
+	public RestaurantMenu(Long restaurantId, String name, String category, String description, String price) {
+		this.restaurantId = restaurantId;
 		this.name = name;
 		this.category = category;
 		this.description = description;
@@ -72,4 +73,13 @@ public class RestaurantMenu {
 	public void setPrice(String price) {
 		this.price = price;
 	}
+
+	public Long getRestaurantId() {
+		return restaurantId;
+	}
+
+	public void setRestaurantId(Long restaurantId) {
+		this.restaurantId = restaurantId;
+	}
+
 }

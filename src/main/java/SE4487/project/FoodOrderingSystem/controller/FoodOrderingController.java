@@ -3,7 +3,6 @@ package SE4487.project.FoodOrderingSystem.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import SE4487.project.FoodOrderingSystem.model.Restaurant;
-import SE4487.project.FoodOrderingSystem.repository.RestaurantRepository;
+import SE4487.project.FoodOrderingSystem.model.RestaurantMenu;
 import SE4487.project.FoodOrderingSystem.service.FoodOrderingService;
 
 @Controller
@@ -23,7 +22,7 @@ public class FoodOrderingController {
 	@Autowired
 	private FoodOrderingService foodOrderingService;
 
-	@GetMapping("restaurant/all")
+	@GetMapping("restaurant")
 	@ResponseBody
 	public List<Restaurant> getAllRestaurants() {
 		return foodOrderingService.getAllRestaurants();
@@ -38,6 +37,18 @@ public class FoodOrderingController {
 	@PostMapping("restaurant")
 	public ResponseEntity<Restaurant> addRestaurant(@RequestBody Restaurant restaurant) {
 		return foodOrderingService.saveRestaurant(restaurant);
+	}
+
+	@GetMapping("menu/{restaurantName}")
+	@ResponseBody
+	public List<RestaurantMenu> getRestaurantMenu(@PathVariable String restaurantName) {
+		return foodOrderingService.getRestaurantMenuByName(restaurantName);
+
+	}
+
+	@PostMapping("menu")
+	public ResponseEntity<RestaurantMenu> addRestaurantMenu(@RequestBody RestaurantMenu restaurantMenu) {
+		return foodOrderingService.saveRestaurantMenu(restaurantMenu);
 	}
 
 }
