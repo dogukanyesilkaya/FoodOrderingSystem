@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import './App.css'
-import { AuthPage } from "./components/AuthPage.jsx";
+import { useState } from "react"
+import { AuthPage } from "./components/AuthPage"
+import Restaurants from "./components/Restaurants";
 
-function App() {
-	const [currentPage, setCurrentPage] = useState(<AuthPage />)
+export default function App() {
+	const [currentPage, setCurrentPage] = useState(null)
 
+	const authPage = () => {
+		return <AuthPage setCurrentPage={setCurrentPage} />
+	}
 	return (
-		<>
-			<AuthPage />
-		</>
+		<div>
+			{<Restaurants />}
+		</div>
 	)
 }
-
-export default App

@@ -1,25 +1,53 @@
-import { useQuery } from "@tanstack/react-query"
-import {loginRequest, registerRequest} from "./api/authRequests";
-export default function AuthPage() {
-	const postsQuery = useQuery({
-		queryKey: ["posts"],
-		queryFn: getPosts,
-		placeholderData: [{ id: 1, title: "Initial Data" }],
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRef } from "react"
+// import { createPost } from "./api/posts"
+import { registerRequest, loginRequest } from "../api/authRequests"
+import Restaurants from "./Restaurants"
+
+export function AuthPage({ setCurrentPage }) {
+	const usernameRef = useRef()
+	const passwordRef = useRef()
+	const roleRef = useRef()
+
+	// const queryClient = useQueryClient()
+	const authMutation = useMutation({
+		mutationFn: loginRequest,
+		onSuccess: () => {
+			console.log("onSucess | AuthPage")
+			setCurrentPage(<Restaurants />)
+		},
 	})
 
-	if (postsQuery.status === "loading") return <h1>Loading...</h1>
-	if (postsQuery.status === "error") {
-		return <h1>{JSON.stringify(postsQuery.error)}</h1>
+	function handleSubmit(e) {
+		e.preventDefault()
+		authMutation.mutate({
+			name: usernameRef.current.value,
+			password: passwordRef.current.value,
+			role: roleRef.current.value
+		})
 	}
 
 	return (
 		<div>
-			<h1>Posts List 1</h1>
-			<ol>
-				{postsQuery.data.map(post => (
-					<li key={post.id}>{post.title}</li>
-				))}
-			</ol>
+			{authMutation.isError && JSON.stringify(authMutation.error)}
+			<h1>Please Enter Your Info</h1>
+			<form onSubmit={handleSubmit}>
+				<div>
+					<label htmlFor="username">Username</label>
+					<input id="username" ref={usernameRef} />
+				</div>
+				<div>
+					<label htmlFor="password">Password</label>
+					<input id="password" ref={passwordRef} />
+				</div>
+				<div>
+					<label htmlFor="role">Role</label>
+					<input id="role" ref={roleRef} />
+				</div>
+				<button disabled={authMutation.isLoading}>
+					{authMutation.isLoading ? "Loading..." : "Login"}
+				</button>
+			</form>
 		</div>
 	)
 }

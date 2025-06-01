@@ -1,49 +1,22 @@
-export async function registerRequest(userData) {
-	try {
-		const response = await fetch('http://localhost:8000/auth/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(userData),
-		});
+import axios from "axios"
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
-		}
-
-		const authToken = response.headers.get("Authorization");
-
-		console.log('Success:', authToken);
-
-		return authToken.substring(7);
-
-	} catch (error) {
-		console.error('Error:', error);
-	}
+export function registerRequest({ username, password, role }) {
+	return axios
+		.post("http://localhost:8080/auth/register", {
+			username,
+			password,
+			role
+		})
+		.then(res => res.data)
 }
-export async function loginRequest(userData) {
-	try {
-		const response = await fetch('http://localhost:8000/auth/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(userData),
-		});
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
-		}
-
-		const authToken = response.headers.get("Authorization");
-
-		console.log('Success:', authToken);
-
-		return authToken.substring(7);
-
-	} catch (error) {
-		console.error('Error:', error);
-	}
+export function loginRequest({ name, password, role }) {
+	return axios
+		.post("http://localhost:8080/auth/login", {
+			name,
+			password,
+			role
+		})
+		.then(res => res.data)
 }
 

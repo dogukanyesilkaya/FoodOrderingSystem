@@ -36,7 +36,7 @@ public class SecurityHttpFilter {
 				.requestMatchers("/auth/**").permitAll() // No auth required
 				.anyRequest().authenticated() // All others must be authenticated
 		);
-		http.formLogin(Customizer.withDefaults());
+		// http.formLogin(Customizer.withDefaults());
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		http.httpBasic(Customizer.withDefaults());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
