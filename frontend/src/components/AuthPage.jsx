@@ -14,7 +14,8 @@ export function AuthPage({ setCurrentPage }) {
 		mutationFn: loginRequest,
 		onSuccess: () => {
 			console.log("onSucess | AuthPage")
-			setCurrentPage(<Restaurants />)
+			localStorage.setItem("role", roleRef.current.value)
+			setCurrentPage(<Restaurants setCurrentPage={setCurrentPage} />)
 		},
 	})
 

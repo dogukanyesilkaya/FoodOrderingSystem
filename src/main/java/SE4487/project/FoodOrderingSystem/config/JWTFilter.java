@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-// @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
 	@Autowired
@@ -34,7 +33,8 @@ public class JWTFilter extends OncePerRequestFilter {
 		String token;
 		String username;
 
-		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")
+				|| request.getServletPath().startsWith("/auth/")) {
 			doFilter(request, response, filterChain);
 			return;
 		}

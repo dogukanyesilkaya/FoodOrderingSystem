@@ -1,8 +1,9 @@
 import axios from "axios"
+import { axiosInstance } from "./authRequests";
 
 export function addRestaurant({ deliveryTime, name, rating, region }) {
-	return axios
-		.post("http://localhost:8080/admin/restaurant", {
+	return axiosInstance
+		.post("/admin/restaurant", {
 			deliveryTime,
 			name,
 			rating,
@@ -12,8 +13,8 @@ export function addRestaurant({ deliveryTime, name, rating, region }) {
 }
 
 export function addRestaurantMenu({ category, description, name, price, restaurantId }) {
-	return axios
-		.post("http://localhost:8080/admin/menu", {
+	return axiosInstance
+		.post("/admin/menu", {
 			category,
 			description,
 			name,

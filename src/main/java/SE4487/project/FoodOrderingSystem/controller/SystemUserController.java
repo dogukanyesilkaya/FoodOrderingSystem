@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import SE4487.project.FoodOrderingSystem.model.Restaurant;
@@ -31,9 +32,9 @@ public class SystemUserController {
 		return foodOrderingService.getRestaurantsByRegion(region);
 	}
 
-	@GetMapping("/menu/{restaurantName}")
+	@GetMapping("/menu")
 	@ResponseBody
-	public List<RestaurantMenu> getRestaurantMenu(@PathVariable String restaurantName) {
+	public List<RestaurantMenu> getRestaurantMenu(@RequestParam(name = "id", required = true) String restaurantName) {
 		return foodOrderingService.getRestaurantMenuByName(restaurantName);
 
 	}
