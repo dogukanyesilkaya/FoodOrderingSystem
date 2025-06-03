@@ -1,15 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRef } from "react"
-// import { createPost } from "./api/posts"
 import { registerRequest, loginRequest } from "../api/authRequests"
 import Restaurants from "./Restaurants"
+import { Container, Form, Button, Alert, Row, Col } from "react-bootstrap";
 
 export function AuthPage({ setCurrentPage }) {
 	const usernameRef = useRef()
 	const passwordRef = useRef()
 	const roleRef = useRef()
 
-	// const queryClient = useQueryClient()
 	const authMutation = useMutation({
 		mutationFn: loginRequest,
 		onSuccess: () => {
@@ -29,26 +28,35 @@ export function AuthPage({ setCurrentPage }) {
 	}
 
 	return (
-		<div>
+		<Container className="align-items-center" style={{ height: '100vh' }}>
 			{authMutation.isError && JSON.stringify(authMutation.error)}
-			<h1>Please Enter Your Info</h1>
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label htmlFor="username">Username</label>
-					<input id="username" ref={usernameRef} />
-				</div>
-				<div>
-					<label htmlFor="password">Password</label>
-					<input id="password" ref={passwordRef} />
-				</div>
-				<div>
-					<label htmlFor="role">Role</label>
-					<input id="role" ref={roleRef} />
-				</div>
-				<button disabled={authMutation.isLoading}>
-					{authMutation.isLoading ? "Loading..." : "Login"}
-				</button>
-			</form>
-		</div>
+			<Row>
+				<Form onSubmit={handleSubmit} className="w-100" >
+					<Form.Group className="mb-3">
+						<Form.Label>Username</Form.Label>
+						<Form.Control type="text" ref={usernameRef} required />
+					</Form.Group>
+
+					<Form.Group className="mb-3">
+						<Form.Label>Password</Form.Label>
+						<Form.Control type="password" ref={passwordRef} required />
+					</Form.Group>
+
+					<Form.Group className="mb-3">
+						<Form.Select ref={roleRef} >
+							<option value="USER">USER</option>
+							<option value="ADMIN">ADMIN</option>
+						</Form.Select>
+					</Form.Group>
+					<Button type="submit" className="mb-3">
+						Login
+					</Button>
+				</Form>
+			</Row>
+
+			<Row>
+				<Alert variant="success">Please Enter Your Info</Alert>
+			</Row>
+		</Container>
 	)
 }
