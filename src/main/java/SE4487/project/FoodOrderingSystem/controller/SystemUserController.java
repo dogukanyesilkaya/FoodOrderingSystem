@@ -22,14 +22,9 @@ public class SystemUserController {
 
 	@GetMapping("/restaurant")
 	@ResponseBody
-	public List<Restaurant> getAllRestaurants() {
-		return foodOrderingService.getAllRestaurants();
-	}
-
-	@GetMapping("/restaurant/{region}")
-	@ResponseBody
-	public List<Restaurant> getRestaurantsByRegion(@PathVariable String region) {
-		return foodOrderingService.getRestaurantsByRegion(region);
+	public List<Restaurant> getRestaurantBySortingId(
+			@RequestParam(name = "sortId", required = true) int restaurantSortId) {
+		return foodOrderingService.getRestaurantBySortingId(restaurantSortId);
 	}
 
 	@GetMapping("/menu")

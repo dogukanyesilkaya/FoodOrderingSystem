@@ -32,6 +32,9 @@ public class SecurityHttpFilter {
 	@Autowired
 	private JWTFilter jwtFilter;
 
+	@Autowired
+	private SystemAuthtenticationProvider systemAuthenticationProvider;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.cors();
@@ -43,6 +46,7 @@ public class SecurityHttpFilter {
 				.anyRequest().authenticated() // All others must be authenticated
 		);
 		// http.formLogin(Customizer.withDefaults());
+		http.authenticationProvider(systemAuthenticationProvider);
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		http.httpBasic(Customizer.withDefaults());
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -51,13 +55,13 @@ public class SecurityHttpFilter {
 
 	}
 
-	@Bean
-	public AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-		authProvider.setUserDetailsService(userDetails);
-		return authProvider;
-	}
+	// @Bean
+	// public AuthenticationProvider authenticationProvider() {
+	// DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	// authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+	// authProvider.setUserDetailsService(userDetails);
+	// return authProvider;
+	// }
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {

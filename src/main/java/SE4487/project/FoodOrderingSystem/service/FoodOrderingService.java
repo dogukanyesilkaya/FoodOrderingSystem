@@ -24,8 +24,20 @@ public class FoodOrderingService {
 		return restaurantRepository.findAll();
 	}
 
-	public List<Restaurant> getRestaurantsByRegion(String region) {
-		return restaurantRepository.findByRegion(region);
+	public List<Restaurant> getRestaurantBySortingId(int id) {
+		switch (id) {
+			case 0:
+				return restaurantRepository.findAllByOrderByNameDesc();
+			case 1:
+				return restaurantRepository.findAllByOrderByRatingDesc();
+			case 2:
+				return restaurantRepository.findAllByOrderByRegionDesc();
+			case 3:
+				return restaurantRepository.findAllByOrderByDeliveryTimeDesc();
+			default:
+				break;
+		}
+		return restaurantRepository.findAll();
 	}
 
 	public List<RestaurantMenu> getRestaurantMenuByName(String restName) {

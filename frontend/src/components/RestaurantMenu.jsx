@@ -20,12 +20,14 @@ export default function RestaurantMenu({ setCurrentPage, restaurantId, restauran
 		return <h1>{JSON.stringify(error)}</h1>
 	}
 
+
 	return (
 		<div>
 			<Container>
 				<ListRestaurantMenu data={data} />
 				<Button disabled={!(localStorage.getItem("role") == "ADMIN")} onClick={() => setModalShow(true)}>Add Menu Item</Button>
 				<ShowAddRestaurantMenuModal show={modalShow} onHide={() => setModalShow(false)} restaurantId={restaurantId} />
+
 
 			</Container>
 		</div>

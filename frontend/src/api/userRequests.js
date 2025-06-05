@@ -1,8 +1,14 @@
 import axios from "axios"
 import { axiosInstance } from "./authRequests";
-export function getRestaurants() {
+
+export function getRestaurants({ restaurantSortId }) {
+	console.log("Axios Sort ID:", restaurantSortId)
 	return axiosInstance
-		.get("/user/restaurant")
+		.get("/user/restaurant", {
+			params: {
+				sortId: restaurantSortId
+			}
+		})
 		.then(res => res.data)
 }
 

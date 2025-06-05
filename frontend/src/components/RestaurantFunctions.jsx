@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { getRestaurants, getRestaurantMenu } from "../api/userRequests"
 import { addRestaurant, addRestaurantMenu } from "../api/adminRequests"
 import RestaurantMenu from "./RestaurantMenu"
-import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal } from "react-bootstrap";
+import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup } from "react-bootstrap";
 
 export function ListRestaurants({ setCurrentPage, data }) {
 
@@ -15,6 +15,7 @@ export function ListRestaurants({ setCurrentPage, data }) {
 					<Card.Body>
 						<Card.Title>{restaurant.name}</Card.Title>
 						<Card.Text>{restaurant.rating}</Card.Text>
+						<Card.Text>{restaurant.deliveryTime}</Card.Text>
 						<Card.Text>{restaurant.region}</Card.Text>
 						<Button onClick={() => {
 							setCurrentPage(<RestaurantMenu
@@ -171,5 +172,32 @@ export function ShowAddRestaurantMenuModal(props) {
 				<Button onClick={handleSubmit}>Add</Button>
 			</Modal.Footer>
 		</Modal>
+	);
+}
+
+export function RestaurantSorting({ setRestaurantId }) {
+
+	const handleRestaurantId = (id) => {
+		setRestaurantId(id)
+	}
+
+	return (
+		<Tab.Container id="list-group-tabs-example" defaultActiveKey="#alphabetically">
+			<ListGroup>
+				<ListGroup.Item action href="#alphabetically" onClick={() => handleRestaurantId(0)}>
+					Sort alphabetically
+				</ListGroup.Item>
+				<ListGroup.Item action href="#rating" onClick={() => handleRestaurantId(1)}>
+					Sort by rating
+				</ListGroup.Item>
+				<ListGroup.Item action href="#region" onClick={() => handleRestaurantId(2)}>
+					Sort by region
+				</ListGroup.Item>
+				<ListGroup.Item action href="#time" onClick={() => handleRestaurantId(3)}>
+					Sort by estimated delivery time
+				</ListGroup.Item>
+
+			</ListGroup>
+		</Tab.Container>
 	);
 }
