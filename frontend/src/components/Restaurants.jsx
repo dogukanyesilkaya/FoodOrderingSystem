@@ -1,10 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { getRestaurants } from "../api/userRequests"
-import { addRestaurant } from "../api/adminRequests"
-import RestaurantMenu from "./RestaurantMenu"
-import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Modal } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { ListRestaurants, RestaurantSorting, ShowAddRestaurantModal } from "./RestaurantFunctions";
+import './Restaurants.css';
 
 export default function Restaurants({ setCurrentPage }) {
 
@@ -22,18 +21,21 @@ export default function Restaurants({ setCurrentPage }) {
 	}
 
 	return (
-		<Container>
-			<ShowAddRestaurantModal show={modalShow} onHide={() => setModalShow(false)} />
-			<Row>
-				<Col>
-					<RestaurantSorting setRestaurantId={setRestaurantSortId} />
-					<Button disabled={!(localStorage.getItem("role") == "ADMIN")} onClick={() => setModalShow(true)}>Add Restaurant</Button>
-				</Col>
-				<Col>
-					<ListRestaurants setCurrentPage={setCurrentPage} data={data} />
-				</Col>
-			</Row>
-		</Container>
-
+		<div className="restaurants-page-background">
+			<Container>
+				<ShowAddRestaurantModal show={modalShow} onHide={() => setModalShow(false)} />
+				<Row>
+					<Col>
+						<RestaurantSorting setRestaurantId={setRestaurantSortId} />
+						<Button className="add-restaurant-button" disabled={!(localStorage.getItem("role") == "ADMIN")} onClick={() => setModalShow(true)}>
+							Add Restaurant
+						</Button>
+					</Col>
+					<Col>
+						<ListRestaurants setCurrentPage={setCurrentPage} data={data} />
+					</Col>
+				</Row>
+			</Container>
+		</div>
 	);
 }
