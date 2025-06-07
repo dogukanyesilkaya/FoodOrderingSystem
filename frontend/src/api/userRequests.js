@@ -2,7 +2,6 @@ import axios from "axios"
 import { axiosInstance } from "./authRequests";
 
 export function getRestaurants({ restaurantSortId }) {
-	console.log("Axios Sort ID:", restaurantSortId)
 	return axiosInstance
 		.get("/user/restaurant", {
 			params: {
@@ -12,9 +11,16 @@ export function getRestaurants({ restaurantSortId }) {
 		.then(res => res.data)
 }
 
-export function getRestaurantMenu(id) {
+export function getRestaurantMenu({ restaurantName, menuCategory }) {
+	console.log("restname: {}", restaurantName)
+	console.log("menuCategory: {}", menuCategory)
 	return axiosInstance
-		.get("/user/menu", { params: { id: id } })
+		.get("/user/menu", {
+			params: {
+				id: restaurantName,
+				category: menuCategory
+			}
+		})
 		.then(res => res.data)
 }
 

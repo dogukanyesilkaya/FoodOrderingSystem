@@ -2,8 +2,43 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, useRef } from "react";
 import { getRestaurants, getRestaurantMenu } from "../api/userRequests"
 import { addRestaurant, addRestaurantMenu } from "../api/adminRequests"
-import RestaurantMenu from "./RestaurantMenu"
+import RestaurantMenu, { MenuCategory } from "./RestaurantMenu"
 import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup } from "react-bootstrap";
+
+export function AuthInput({ handleSubmit, usernameRef, passwordRef, roleRef }) {
+	return (
+		<Container className="align-items-center" style={{ height: '100vh' }}>
+			<Row>
+				<Form onSubmit={handleSubmit} className="w-100" >
+					<Form.Group className="mb-3">
+						<Form.Label>Username</Form.Label>
+						<Form.Control type="text" ref={usernameRef} required />
+					</Form.Group>
+
+					<Form.Group className="mb-3">
+						<Form.Label>Password</Form.Label>
+						<Form.Control type="password" ref={passwordRef} required />
+					</Form.Group>
+
+					<Form.Group className="mb-3">
+						<Form.Select ref={roleRef} >
+							<option value="USER">USER</option>
+							<option value="ADMIN">ADMIN</option>
+						</Form.Select>
+					</Form.Group>
+					<Button type="submit" className="mb-3">
+						Login
+					</Button>
+				</Form>
+			</Row>
+
+			<Row>
+				<Alert variant="success">Please Enter Your Info</Alert>
+			</Row>
+		</Container>
+
+	);
+}
 
 export function ListRestaurants({ setCurrentPage, data }) {
 
@@ -14,8 +49,8 @@ export function ListRestaurants({ setCurrentPage, data }) {
 				<Card key={restaurant.id}>
 					<Card.Body>
 						<Card.Title>{restaurant.name}</Card.Title>
-						<Card.Text>{restaurant.rating}</Card.Text>
-						<Card.Text>{restaurant.deliveryTime}</Card.Text>
+						<Card.Text>{restaurant.rating}/10</Card.Text>
+						<Card.Text>{restaurant.deliveryTime} minutes</Card.Text>
 						<Card.Text>{restaurant.region}</Card.Text>
 						<Button onClick={() => {
 							setCurrentPage(<RestaurantMenu
@@ -94,6 +129,7 @@ export function ShowAddRestaurantModal(props) {
 
 export function ListRestaurantMenu({ data }) {
 
+	console.log("Data: ", data)
 	return (
 		<div>
 			{data?.map((menu) => (
@@ -199,5 +235,27 @@ export function RestaurantSorting({ setRestaurantId }) {
 
 			</ListGroup>
 		</Tab.Container>
+	);
+}
+
+export function RestaurantMenuSorting({ setCategoryMenu }) {
+
+	const handleCategoryMenu = (event) => {
+		const category = event.target.value;
+		setCategoryMenu(category)
+	}
+
+	return (
+		<Form>
+			<Form.Group className="mb-3">
+				<Form.Select onChange={handleCategoryMenu}>
+					<option value={MenuCategory.NotSelected}>Not Selected</option>
+					<option value={MenuCategory.Burger}>Burger</option>
+					<option value={MenuCategory.Sandwich}>Sandwich</option>
+					<option value={MenuCategory.Kebap}>Kebap</option>
+					<option value={MenuCategory.Salad}>Salad</option>
+				</Form.Select>
+			</Form.Group>
+		</Form>
 	);
 }
