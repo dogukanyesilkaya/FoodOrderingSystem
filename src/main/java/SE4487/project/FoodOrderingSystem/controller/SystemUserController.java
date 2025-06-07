@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import SE4487.project.FoodOrderingSystem.model.Restaurant;
@@ -21,20 +21,17 @@ public class SystemUserController {
 
 	@GetMapping("/restaurant")
 	@ResponseBody
-	public List<Restaurant> getAllRestaurants() {
-		return foodOrderingService.getAllRestaurants();
+	public List<Restaurant> getRestaurantBySortingId(
+			@RequestParam(name = "sortId", required = true) int restaurantSortId) {
+		return foodOrderingService.getRestaurantBySortingId(restaurantSortId);
 	}
 
-	@GetMapping("/restaurant/{region}")
+	@GetMapping("/menu")
 	@ResponseBody
-	public List<Restaurant> getRestaurantsByRegion(@PathVariable String region) {
-		return foodOrderingService.getRestaurantsByRegion(region);
-	}
-
-	@GetMapping("/menu/{restaurantName}")
-	@ResponseBody
-	public List<RestaurantMenu> getRestaurantMenu(@PathVariable String restaurantName) {
-		return foodOrderingService.getRestaurantMenuByName(restaurantName);
+	public List<RestaurantMenu> getRestaurantMenu(
+			@RequestParam(name = "id", required = true) String restaurantName,
+			@RequestParam(name = "category", required = true) String category) {
+		return foodOrderingService.getRestaurantMenuByNameAndCategory(restaurantName, category);
 
 	}
 

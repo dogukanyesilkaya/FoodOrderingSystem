@@ -1,9 +1,13 @@
 package SE4487.project.FoodOrderingSystem.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import SE4487.project.FoodOrderingSystem.model.SystemUser;
@@ -28,11 +32,22 @@ public class UserService {
 	}
 
 	public String verify(SystemUser user) {
-		Authentication authentication = authManager
-				.authenticate(new UsernamePasswordAuthenticationToken(user.getName(), user.getPassword()));
+		// Create authentication token with role as details
+		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getName(),
+				user.getPassword());
 
-		if (authentication.isAuthenticated()) {
-			return jwtService.generateToken(user);
+		// Add role information as details
+		Map<String, Object> details = new HashMap<>();
+		details.put("role", user.getRole());
+		authToken.setDetails(details);
+
+		try {
+			Authentication authentication = authManager.authenticate(authToken);
+			if (authentication.isAuthenticated()) {
+				return jwtService.generateToken(user);
+			}
+		} catch (AuthenticationException e) {
+			return "fail";
 		}
 
 		return "fail";

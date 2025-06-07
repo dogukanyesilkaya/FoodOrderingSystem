@@ -17,4 +17,14 @@ public interface RestaurantMenuRepository extends JpaRepository<RestaurantMenu, 
 			""", nativeQuery = true)
 	List<RestaurantMenu> findByRestaurantName(String restName);
 
+	@Query(value = """
+			SELECT m.*
+				FROM restaurant_menu
+				m JOIN
+				restaurant r
+				ON m.restaurant_id=
+				r.id WHERE r.name = ?1
+				AND m.category = ?2 """, nativeQuery = true)
+	List<RestaurantMenu> findByRestaurantNameAndCategory(String restName, String category);
+
 }

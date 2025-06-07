@@ -1,0 +1,29 @@
+.menu-page-background {
+    background-image: url('https://images01.nicepage.com/a1389d7bc73adea1e1c1fb7e/f55c87d06a345e9c94021f3e/3007283.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 50px 0;
+}
+
+button.add-item-button {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    font-size: 1.1rem;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+button.add-item-button:hover {
+    background-color: #218838;
+}
+
+button:disabled {
+    background-color: #ddd;
+}
