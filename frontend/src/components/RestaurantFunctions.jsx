@@ -4,12 +4,14 @@ import { getRestaurants, getRestaurantMenu } from "../api/userRequests"
 import { addRestaurant, addRestaurantMenu } from "../api/adminRequests"
 import RestaurantMenu, { MenuCategory } from "./RestaurantMenu"
 import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup } from "react-bootstrap";
+import shoppingCart from "../assets/shoppingCart.jpg";
 
-export function AuthInput({ handleSubmit, usernameRef, passwordRef, roleRef }) {
+export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordRef, roleRef }) {
+	console.log('LoginScreen received refs:', { usernameRef, passwordRef, roleRef });
 	return (
 		<Container className="align-items-center" style={{ height: '100vh' }}>
 			<Row>
-				<Form onSubmit={handleSubmit} className="w-100" >
+				<Form onSubmit={handleLogin} className="w-100" >
 					<Form.Group className="mb-3">
 						<Form.Label>Username</Form.Label>
 						<Form.Control type="text" ref={usernameRef} required />
@@ -26,8 +28,11 @@ export function AuthInput({ handleSubmit, usernameRef, passwordRef, roleRef }) {
 							<option value="ADMIN">ADMIN</option>
 						</Form.Select>
 					</Form.Group>
-					<Button type="submit" className="mb-3">
+					<Button type="submit" variant="primary" className="mb-3 me-2">
 						Login
+					</Button>
+					<Button className="mb-3" variant="outline-secondary" onClick={() => setIsRegister(true)}>
+						Register
 					</Button>
 				</Form>
 			</Row>
@@ -39,6 +44,41 @@ export function AuthInput({ handleSubmit, usernameRef, passwordRef, roleRef }) {
 
 	);
 }
+
+export function RegisterPopup({ handleRegister, isRegister, setIsRegister, usernameRef, passwordRef, roleRef }) {
+	return (
+		<Modal centered show={isRegister} onHide={() => setIsRegister(false)}>
+			<Modal.Header closeButton>Add User</Modal.Header>
+			<Modal.Body>
+				<Form onSubmit={handleRegister} className="w-100" id="registerForm">
+					<Form.Group className="mb-3">
+						<Form.Label>Username</Form.Label>
+						<Form.Control type="text" ref={usernameRef} required />
+					</Form.Group>
+
+					<Form.Group className="mb-3">
+						<Form.Label>Password</Form.Label>
+						<Form.Control type="password" ref={passwordRef} required />
+					</Form.Group>
+
+					<Form.Group className="mb-3">
+						<Form.Select ref={roleRef} >
+							<option value="USER">USER</option>
+							<option value="ADMIN">ADMIN</option>
+						</Form.Select>
+					</Form.Group>
+				</Form>
+
+			</Modal.Body>
+			<Modal.Footer >
+				<Button type="submit" className="mb-3" form="registerForm">
+					Register
+				</Button>
+			</Modal.Footer>
+		</Modal >
+	);
+}
+
 
 export function ListRestaurants({ setCurrentPage, data }) {
 
@@ -134,12 +174,19 @@ export function ListRestaurantMenu({ data }) {
 		<div>
 			{data?.map((menu) => (
 
-				<Card key={menu.id}>
+				<Card key={menu.id} className="text-center" style={{ width: '18rem' }}>
+					<Card.Header className="d-flex justify-content-end">
+						<Button >
+							<Button variant="link" className="p-0 border-0" style={{ padding: '2px' }}>
+								<img src={shoppingCart} alt="Button image" style={{ width: '30px', height: '30px' }} />
+							</Button>
+						</Button>
+					</Card.Header>
 					<Card.Body>
 						<Card.Title>{menu.name}</Card.Title>
-						<Card.Text>{menu.category}</Card.Text>
+						<Card.Subtitle className="mb-2 text-muted">{menu.category}</Card.Subtitle>
 						<Card.Text>{menu.description}</Card.Text>
-						<Card.Text>{menu.price}</Card.Text>
+						<Card.Footer className="text-muted">{menu.price} TL</Card.Footer>
 					</Card.Body>
 				</Card>
 
