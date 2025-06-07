@@ -1,31 +1,41 @@
-import { useMutation } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import { registerRequest, loginRequest } from "../api/authRequests";
-import Restaurants from "./Restaurants";
-import { Container, Button, Modal, Row, Col } from "react-bootstrap";
-import { AuthInput } from "./RestaurantFunctions";
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRef, useState } from "react"
+import { registerRequest, loginRequest } from "../api/authRequests"
+import Restaurants from "./Restaurants"
+import { Container, Form, Button, Alert, Row, Col, Modal } from "react-bootstrap";
+import { LoginScreen, RegisterPopup } from "./RestaurantFunctions";
 import './AuthPage.css';
 
+
 export function AuthPage({ setCurrentPage }) {
-	const [authOption, setAuthOption] = useState(null);
+	const [isRegister, setIsRegister] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
-	const usernameRef = useRef();
-	const passwordRef = useRef();
-	const roleRef = useRef();
+	const usernameRef = useRef(null);
+	const passwordRef = useRef(null);
+	const roleRef = useRef(null);
 
+	const queryClient = useQueryClient();
 	const loginMutation = useMutation({
 		mutationFn: loginRequest,
+		mutationKey: ["login"],
 		onSuccess: () => {
 			localStorage.setItem("role", roleRef.current.value);
 			setCurrentPage(<Restaurants setCurrentPage={setCurrentPage} />);
+		},
+		onError: (error) => {
+			setErrorMessage("Invalid username or password. Please try again.");
 		},
 	});
 
 	const registerMutation = useMutation({
 		mutationFn: registerRequest,
 		onSuccess: () => {
-			localStorage.setItem("role", roleRef.current.value);
-			setCurrentPage(<Restaurants setCurrentPage={setCurrentPage} />);
+			console.log("You've created an user");
+			queryClient.invalidateQueries(["login"]);
+		},
+		onError: (error) => {
+			setErrorMessage("Registration failed. Please try again.");
 		},
 	});
 
@@ -34,7 +44,7 @@ export function AuthPage({ setCurrentPage }) {
 		loginMutation.mutate({
 			name: usernameRef.current.value,
 			password: passwordRef.current.value,
-			role: roleRef.current.value
+			role: roleRef.current.value,
 		});
 	}
 
@@ -43,56 +53,34 @@ export function AuthPage({ setCurrentPage }) {
 		registerMutation.mutate({
 			name: usernameRef.current.value,
 			password: passwordRef.current.value,
-			role: roleRef.current.value
+			role: roleRef.current.value,
 		});
 	}
 
 	return (
-		<div className="auth-background">
-			<Container className="auth-wrapper">
-				<h2 className="text-center mb-4 text-white">Yemek Sipariş Sistemi</h2>
-				<Row className="justify-content-center">
-					<Col xs="auto">
-						<Button variant="light" onClick={() => setAuthOption(true)} className="me-3 shadow">
-							Giriş Yap
-						</Button>
-						<Button variant="outline-light" onClick={() => setAuthOption(false)} className="shadow">
-							Kayıt Ol
-						</Button>
-					</Col>
-				</Row>
+		<Container className="auth-page">
+			<Row className="justify-content-center">
+				{errorMessage && <Alert variant="danger" className="error-alert">{errorMessage}</Alert>}
 
-				<Row className="justify-content-center mt-4">
-					<Col xs={12} md={6}>
-						{authOption === true && (
-							<div className="glass-panel p-4 mt-3">
-								<AuthInput
-									handleSubmit={handleLoginSubmit}
-									usernameRef={usernameRef}
-									passwordRef={passwordRef}
-									roleRef={roleRef}
-								/>
-							</div>
-						)}
-
-						{authOption === false && (
-							<Modal centered show onHide={() => setAuthOption(null)} backdrop="static">
-								<Modal.Header closeButton>
-									<Modal.Title>Kullanıcı Kaydı</Modal.Title>
-								</Modal.Header>
-								<Modal.Body>
-									<AuthInput
-										handleSubmit={handleRegisterSubmit}
-										usernameRef={usernameRef}
-										passwordRef={passwordRef}
-										roleRef={roleRef}
-									/>
-								</Modal.Body>
-							</Modal>
-						)}
-					</Col>
-				</Row>
-			</Container>
-		</div>
+				{!isRegister ? (
+					<LoginScreen
+						handleLogin={handleLoginSubmit}
+						setIsRegister={setIsRegister}
+						usernameRef={usernameRef}
+						passwordRef={passwordRef}
+						roleRef={roleRef}
+					/>
+				) : (
+					<RegisterPopup
+						handleRegister={handleRegisterSubmit}
+						isRegister={isRegister}
+						setIsRegister={setIsRegister}
+						usernameRef={usernameRef}
+						passwordRef={passwordRef}
+						roleRef={roleRef}
+					/>
+				)}
+			</Row>
+		</Container>
 	);
 }
