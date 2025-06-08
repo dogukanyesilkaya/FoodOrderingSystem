@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { getRestaurants, getRestaurantMenu } from "../api/userRequests"
 import { addRestaurant, addRestaurantMenu } from "../api/adminRequests"
 import RestaurantMenu, { MenuCategory } from "./RestaurantMenu"
-import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup } from "react-bootstrap";
+import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup, Offcanvas } from "react-bootstrap";
 import shoppingCart from "../assets/shoppingCart.jpg";
 
 export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordRef, roleRef }) {
@@ -76,6 +76,43 @@ export function RegisterPopup({ handleRegister, isRegister, setIsRegister, usern
 				</Button>
 			</Modal.Footer>
 		</Modal >
+	);
+}
+
+export function ShowShoppingCart({ items }) {
+	const [show, setShow] = useState(false);
+
+	const totalPrice = items.reduce((acc, item) => acc + Number(item.price), 0);
+	return (
+		<>
+			<Button variant="primary" onClick={() => setShow(true)} className="me-2">
+				Cart
+			</Button>
+			<Offcanvas show={show} onHide={() => setShow(false)} placement={'end'}>
+				<Offcanvas.Header closeButton>
+					<Offcanvas.Title> Shopping Cart</Offcanvas.Title>
+				</Offcanvas.Header>
+				<Offcanvas.Body>
+					{items.length > 0 ? (
+						items.map(item => (
+							<Card key={item.id} className="mb-2">
+								<Card.Body>
+									<Card.Title>{item.name}</Card.Title>
+									<Card.Text>{item.description}</Card.Text>
+									<Card.Footer>{item.price} TL</Card.Footer>
+								</Card.Body>
+							</Card>
+						))
+					) : (
+						<p>Your cart is empty</p>
+					)}
+
+					<Alert show={items !== null} variant="secondary">
+						Total Cost: {totalPrice} TL
+					</Alert>"
+				</Offcanvas.Body>
+			</Offcanvas>
+		</>
 	);
 }
 
@@ -167,19 +204,34 @@ export function ShowAddRestaurantModal(props) {
 	);
 }
 
-export function ListRestaurantMenu({ data }) {
+export function ListRestaurantMenu({ data, items, setItems }) {
 
-	console.log("Data: ", data)
+
+	function addToItems(itemId) {
+		// Find the item in data by id
+		const itemToAdd = data.find(item => item.id === itemId);
+		console.log("itemtoAdd: ", itemToAdd)
+		console.log("itemtoAdd id: ", itemId)
+		if (!itemToAdd) return;
+
+
+		// Add the item if not already in items (optional)
+		setItems(prevItems => {
+			if (prevItems.some(item => item.id === itemId)) return prevItems;
+			return [...prevItems, itemToAdd];
+		});
+	}
+
+	console.log('Items:', items);
 	return (
 		<div>
-			{data?.map((menu) => (
+			{data?.map(menu => (
 
 				<Card key={menu.id} className="text-center" style={{ width: '18rem' }}>
 					<Card.Header className="d-flex justify-content-end">
-						<Button >
-							<Button variant="link" className="p-0 border-0" style={{ padding: '2px' }}>
-								<img src={shoppingCart} alt="Button image" style={{ width: '30px', height: '30px' }} />
-							</Button>
+						<Button variant="link" className="p-0 border-0" style={{ padding: '2px' }}
+							onClick={() => { addToItems(menu.id) }}>
+							<img src={shoppingCart} alt="Button image" style={{ width: '30px', height: '30px' }} />
 						</Button>
 					</Card.Header>
 					<Card.Body>

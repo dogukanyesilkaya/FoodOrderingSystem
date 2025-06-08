@@ -1,5 +1,9 @@
 package SE4487.project.FoodOrderingSystem.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,6 +27,35 @@ public class FoodOrderingService {
 	@Autowired
 	private RestaurantMenuRepository restaurantMenuRepository;
 
+	private List<Restaurant> sortRestaurantsByRating(List<Restaurant> allRest) {
+
+		Collections.sort(allRest, new Comparator<Restaurant>() {
+
+			public int compare(Restaurant rest1, Restaurant rest2) {
+				int rest1Rating = Integer.parseInt(rest1.getRating());
+				int rest2Rating = Integer.parseInt(rest2.getRating());
+
+				return Integer.compare(rest2Rating, rest1Rating);
+			}
+		});
+
+		return allRest;
+	}
+
+	private List<Restaurant> sortRestaurantsByDeliveryTime(List<Restaurant> allRest) {
+		Collections.sort(allRest, new Comparator<Restaurant>() {
+
+			public int compare(Restaurant rest1, Restaurant rest2) {
+				int rest1Rating = Integer.parseInt(rest1.getDeliveryTime());
+				int rest2Rating = Integer.parseInt(rest2.getDeliveryTime());
+
+				return Integer.compare(rest1Rating, rest2Rating);
+			}
+		});
+
+		return allRest;
+	}
+
 	public List<Restaurant> getAllRestaurants() {
 		return restaurantRepository.findAll();
 	}
@@ -30,17 +63,16 @@ public class FoodOrderingService {
 	public List<Restaurant> getRestaurantBySortingId(int id) {
 		switch (id) {
 			case 0:
-				return restaurantRepository.findAllByOrderByNameDesc();
+				return restaurantRepository.findAllByOrderByNameAsc();
 			case 1:
-				return restaurantRepository.findAllByOrderByRatingDesc();
+				return sortRestaurantsByRating(getAllRestaurants());
 			case 2:
-				return restaurantRepository.findAllByOrderByRegionDesc();
+				return restaurantRepository.findAllByOrderByRegionAsc();
 			case 3:
-				return restaurantRepository.findAllByOrderByDeliveryTimeDesc();
+				return sortRestaurantsByDeliveryTime(getAllRestaurants());
 			default:
-				break;
+				return restaurantRepository.findAll();
 		}
-		return restaurantRepository.findAll();
 	}
 
 	public List<RestaurantMenu> getRestaurantMenuByNameAndCategory(String restName, String category) {

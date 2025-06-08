@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import SE4487.project.FoodOrderingSystem.model.Restaurant;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-	List<Restaurant> findAllByOrderByNameDesc();
+	List<Restaurant> findAllByOrderByNameAsc();
 
-	List<Restaurant> findAllByOrderByRegionDesc();
+	List<Restaurant> findAllByOrderByRegionAsc();
 
 	List<Restaurant> findAllByOrderByRatingDesc();
 
