@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { registerRequest, loginRequest } from "../api/authRequests"
 import Restaurants from "./Restaurants"
 import { Container, Form, Button, Alert, Row, Col, Modal } from "react-bootstrap";
@@ -9,7 +9,7 @@ import './AuthPage.css';
 
 export function AuthPage({ setCurrentPage }) {
 	const [isRegister, setIsRegister] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
+	const [alertMessage, setAlertMessage] = useState("Please enter your info");
 
 	const usernameRef = useRef(null);
 	const passwordRef = useRef(null);
@@ -24,18 +24,18 @@ export function AuthPage({ setCurrentPage }) {
 			setCurrentPage(<Restaurants setCurrentPage={setCurrentPage} />);
 		},
 		onError: (error) => {
-			setErrorMessage("Invalid username or password. Please try again.");
+
 		},
 	});
+
 
 	const registerMutation = useMutation({
 		mutationFn: registerRequest,
 		onSuccess: () => {
-			console.log("You've created an user");
 			queryClient.invalidateQueries(["login"]);
 		},
 		onError: (error) => {
-			setErrorMessage("Registration failed. Please try again.");
+			setAlertMessage("Registration failed. Please try again.");
 		},
 	});
 
@@ -70,7 +70,6 @@ export function AuthPage({ setCurrentPage }) {
 	return (
 		<Container className="auth-page">
 			<Row className="justify-content-center">
-				{errorMessage && <Alert variant="danger" className="error-alert">{errorMessage}</Alert>}
 
 				{!isRegister ? (
 					<LoginScreen
@@ -79,6 +78,7 @@ export function AuthPage({ setCurrentPage }) {
 						usernameRef={usernameRef}
 						passwordRef={passwordRef}
 						roleRef={roleRef}
+						alertMessage={"Please enter your info"}
 					/>
 				) : (
 					<RegisterPopup

@@ -11,7 +11,7 @@ export function backToRestaurants({ setCurrentPage }) {
 	//const restaurantPage = 
 	setCurrentPage(<Restaurants setCurrentPage={setCurrentPage} />)
 }
-export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordRef, roleRef }) {
+export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordRef, roleRef, alertMessage }) {
 	console.log('LoginScreen received refs:', { usernameRef, passwordRef, roleRef });
 	return (
 		<Container className="align-items-center" style={{ height: '100vh' }}>
@@ -43,7 +43,7 @@ export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordR
 			</Row>
 
 			<Row>
-				<Alert variant="success">Please Enter Your Info</Alert>
+				<Alert variant="success">{alertMessage}</Alert>
 			</Row>
 		</Container>
 

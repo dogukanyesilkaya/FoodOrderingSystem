@@ -1,0 +1,24 @@
+INSERT INTO system_user VALUES (1,'admin','123','ADMIN');
+INSERT INTO system_user VALUES (2,'user','456','USER');
+
+INSERT INTO restaurant VALUES (1,'25','Burger King','6','Izmir',NULL);
+INSERT INTO restaurant VALUES (2,'15','Subway','9','Izmir',NULL);
+INSERT INTO restaurant VALUES (3,'35','Brothers Kebap','8','Mugla',NULL);
+INSERT INTO restaurant VALUES (4,'75','Elite Salad','10','Istanbul',NULL);
+
+INSERT INTO restaurant_menu VALUES (1,'Burger','Great burger for those who love onion!','Mega Onion Burger','290',1);
+INSERT INTO restaurant_menu VALUES (2,'Burger','Extra spicy!!','Mexican Burger','280',1);
+INSERT INTO restaurant_menu VALUES (3,'Burger','Traditional English Cuisine!','Fish Burger','260',1);
+INSERT INTO restaurant_menu VALUES (4,'Salad','For those who dont like meat','Veggie Salad','190',1);
+
+INSERT INTO restaurant_menu VALUES (5,'Sandwich','Classic taste!','Beef sandwich','320',2);
+INSERT INTO restaurant_menu VALUES (6,'Sandwich','New taste!','Pepperoni sandwich','280',2);
+INSERT INTO restaurant_menu VALUES (7,'Salad','Our specialty','Fruit Salad','150',2);
+
+INSERT INTO restaurant_menu VALUES (8,'Kebap','Tasty!','Adana Kebap','350',3);
+INSERT INTO restaurant_menu VALUES (9,'Kebap','Tasty!','Urfa Kebap','345',3);
+INSERT INTO restaurant_menu VALUES (10,'Burger','Tasty!','Kids Burger','160',3);
+
+INSERT INTO restaurant_menu VALUES (11,'Salad','With Fresh Ingredients!','Tuna Salad','140',4);
+INSERT INTO restaurant_menu VALUES (12,'Salad','With Fresh Ingredients!','Veggie Salad','120',4);
+INSERT INTO restaurant_menu VALUES (13,'Salad','With Fresh Ingredients!','Fruit Salad','130',4);
