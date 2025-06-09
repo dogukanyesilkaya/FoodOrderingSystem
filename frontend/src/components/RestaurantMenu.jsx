@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react";
 import { getRestaurantMenu } from "../api/userRequests"
-import { Container, Button, Row } from "react-bootstrap";
-import { ListRestaurantMenu, RestaurantMenuSorting, ShowAddRestaurantMenuModal, ShowShoppingCart } from "./RestaurantFunctions";
+import { Container, Button, Row, Col } from "react-bootstrap";
+import { backToRestaurants, ListRestaurantMenu, RestaurantMenuSorting, ShowAddRestaurantMenuModal, ShowShoppingCart } from "./RestaurantFunctions";
 import './RestaurantMenu.css'; // Yeni stil dosyası
 
 export const MenuCategory = {
@@ -33,7 +33,17 @@ export default function RestaurantMenu({ setCurrentPage, restaurantId, restauran
 	return (
 		<div className="menu-page-background">
 			<ShowAddRestaurantMenuModal show={modalShow} onHide={() => setModalShow(false)} restaurantId={restaurantId} />
-			<ShowShoppingCart items={items} />
+			<Row >
+				<Col>
+					<Button onClick={() => backToRestaurants({ setCurrentPage })} >
+						Restaurants
+					</Button>
+				</Col>
+				<Col>
+					<ShowShoppingCart items={items} setItems={setItems} />
+				</Col>
+
+			</Row>
 			<Row>
 				<Container>
 					<RestaurantMenuSorting setCategoryMenu={setMenuCategory} />
@@ -41,6 +51,7 @@ export default function RestaurantMenu({ setCurrentPage, restaurantId, restauran
 					<Button className="add-item-button" disabled={!(localStorage.getItem("role") == "ADMIN")} onClick={() => setModalShow(true)}>
 						Add Menu Item
 					</Button>
+
 				</Container>
 			</Row>
 		</div>

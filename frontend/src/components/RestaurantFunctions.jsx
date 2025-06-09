@@ -3,9 +3,14 @@ import { useState, useRef } from "react";
 import { getRestaurants, getRestaurantMenu } from "../api/userRequests"
 import { addRestaurant, addRestaurantMenu } from "../api/adminRequests"
 import RestaurantMenu, { MenuCategory } from "./RestaurantMenu"
-import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup, Offcanvas } from "react-bootstrap";
+import { Container, Form, Button, Alert, Row, Col, Tab, Nav, Card, CardBody, Modal, ListGroup, Offcanvas, CardGroup } from "react-bootstrap";
 import shoppingCart from "../assets/shoppingCart.jpg";
+import Restaurants from "./Restaurants";
 
+export function backToRestaurants({ setCurrentPage }) {
+	//const restaurantPage = 
+	setCurrentPage(<Restaurants setCurrentPage={setCurrentPage} />)
+}
 export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordRef, roleRef }) {
 	console.log('LoginScreen received refs:', { usernameRef, passwordRef, roleRef });
 	return (
@@ -79,12 +84,31 @@ export function RegisterPopup({ handleRegister, isRegister, setIsRegister, usern
 	);
 }
 
-export function ShowShoppingCart({ items }) {
+export function ShowShoppingCart({ items, setItems }) {
 	const [show, setShow] = useState(false);
+	const [isCompleted, setIsCompleted] = useState(false);
 
 	const totalPrice = items.reduce((acc, item) => acc + Number(item.price), 0);
+
+	function removeFromItems(itemId) {
+		setItems(prevItems => prevItems.filter(item => item.id !== itemId));
+	}
+	function ConfirmationPopup() {
+		return (
+			<Modal show={isCompleted} onHide={() => setIsCompleted(false)} centered>
+
+				<Modal.Header closeButton>Attention!</Modal.Header>
+				<Modal.Body>
+					<Alert>
+						Your order is taken
+					</Alert>
+				</Modal.Body>
+			</Modal>
+		);
+	}
 	return (
 		<>
+			<ConfirmationPopup />
 			<Button variant="primary" onClick={() => setShow(true)} className="me-2">
 				Cart
 			</Button>
@@ -96,6 +120,11 @@ export function ShowShoppingCart({ items }) {
 					{items.length > 0 ? (
 						items.map(item => (
 							<Card key={item.id} className="mb-2">
+								<Card.Header>
+									<Button onClick={() => removeFromItems(item.id)}>
+										remove
+									</Button>
+								</Card.Header>
 								<Card.Body>
 									<Card.Title>{item.name}</Card.Title>
 									<Card.Text>{item.description}</Card.Text>
@@ -107,9 +136,13 @@ export function ShowShoppingCart({ items }) {
 						<p>Your cart is empty</p>
 					)}
 
-					<Alert show={items !== null} variant="secondary">
+					<Alert show={items > 0} variant="secondary">
 						Total Cost: {totalPrice} TL
-					</Alert>"
+					</Alert>
+					<Button variant="outline-secondary" onClick={() => setIsCompleted(true)} className="me-2">
+						Give Order
+					</Button>
+
 				</Offcanvas.Body>
 			</Offcanvas>
 		</>
@@ -120,7 +153,7 @@ export function ShowShoppingCart({ items }) {
 export function ListRestaurants({ setCurrentPage, data }) {
 
 	return (
-		<div>
+		<CardGroup>
 			{data?.map((restaurant) => (
 
 				<Card key={restaurant.id}>
@@ -139,7 +172,7 @@ export function ListRestaurants({ setCurrentPage, data }) {
 
 			))
 			}
-		</div>
+		</CardGroup>
 	);
 }
 
@@ -169,6 +202,9 @@ export function ShowAddRestaurantModal(props) {
 		})
 	}
 
+	const [ratingValue, setRatingValue] = useState(5)
+	const [deliveryTimeValue, setDeliveryTimeValue] = useState(45)
+
 	return (
 		<Modal
 			{...props} centered>
@@ -180,16 +216,26 @@ export function ShowAddRestaurantModal(props) {
 						<Form.Control type="text" ref={nameRef} required />
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>rating</Form.Label>
-						<Form.Control type="text" ref={ratingRef} required />
+						<Form.Label>Rating: {ratingValue}</Form.Label>
+						<Form.Range min="1" max="10" step="1" value={ratingValue} onChange={(e) => setRatingValue(e.target.value)}
+							ref={ratingRef} required />
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>Delivery Time</Form.Label>
-						<Form.Control type="text" ref={deliveryTimeRef} required />
+						<Form.Label>Delivery Time: {deliveryTimeValue} minutes</Form.Label>
+						{/* <Form.Control type="text" ref={deliveryTimeRef} required /> */}
+						<Form.Range min="5" max="120" step="5" value={deliveryTimeValue} onChange={(e) => setDeliveryTimeValue(e.target.value)}
+							ref={deliveryTimeRef} required />
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Region</Form.Label>
-						<Form.Control type="text" ref={regionRef} required />
+						<Form.Select ref={regionRef} required >
+							<option value="Izmir">Select Region </option>
+							<option value="Izmir">Izmir</option>
+							<option value="Istanbul">Istanbul</option>
+							<option value="Adana">Adana</option>
+							<option value="Kars">Kars</option>
+							<option value="Mugla">Mugla</option>
+						</Form.Select>
 					</Form.Group>
 
 
@@ -224,7 +270,7 @@ export function ListRestaurantMenu({ data, items, setItems }) {
 
 	console.log('Items:', items);
 	return (
-		<div>
+		<CardGroup>
 			{data?.map(menu => (
 
 				<Card key={menu.id} className="text-center" style={{ width: '18rem' }}>
@@ -244,7 +290,7 @@ export function ListRestaurantMenu({ data, items, setItems }) {
 
 			))
 			}
-		</div>
+		</CardGroup>
 	);
 }
 
@@ -276,6 +322,8 @@ export function ShowAddRestaurantMenuModal(props) {
 		})
 	}
 
+
+	const [priceValue, setPriceValue] = useState(120)
 	return (
 		<Modal
 			{...modalProps} centered>
@@ -287,16 +335,25 @@ export function ShowAddRestaurantMenuModal(props) {
 						<Form.Control type="text" ref={nameRef} required />
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>category</Form.Label>
-						<Form.Control type="text" ref={categoryRef} required />
+						<Form.Label>Category</Form.Label>
+						<Form.Select ref={categoryRef} required >
+							<option value="Not Selected">Not Selected</option>
+							<option value="Burger">Burger</option>
+							<option value="Sandwich">Sandwich</option>
+							<option value="Kebap">Kebap</option>
+							<option value="Salad">Salad</option>
+						</Form.Select>
+
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Description</Form.Label>
 						<Form.Control type="text" ref={descriptionRef} required />
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>Price</Form.Label>
-						<Form.Control type="text" ref={priceRef} required />
+						<Form.Label>Price: {priceValue} TL</Form.Label>
+						<Form.Range min="20" max="1500" step="10" value={priceValue} onChange={(e) => setPriceValue(e.target.value)}
+							ref={priceRef} required />
+
 					</Form.Group>
 
 				</Form>

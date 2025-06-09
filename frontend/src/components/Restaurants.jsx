@@ -22,19 +22,18 @@ export default function Restaurants({ setCurrentPage }) {
 
 	return (
 		<div className="restaurants-page-background">
-			<Container>
+			<Container className="d-flex flex-column gap-3">
 				<ShowAddRestaurantModal show={modalShow} onHide={() => setModalShow(false)} />
+				<RestaurantSorting setRestaurantId={setRestaurantSortId} />
+				<Button className="add-restaurant-button" disabled={!(localStorage.getItem("role") == "ADMIN")} onClick={() => setModalShow(true)}>
+					Add Restaurant
+				</Button>
 				<Row>
-					<Col>
-						<RestaurantSorting setRestaurantId={setRestaurantSortId} />
-						<Button className="add-restaurant-button" disabled={!(localStorage.getItem("role") == "ADMIN")} onClick={() => setModalShow(true)}>
-							Add Restaurant
-						</Button>
-					</Col>
 					<Col>
 						<ListRestaurants setCurrentPage={setCurrentPage} data={data} />
 					</Col>
 				</Row>
+
 			</Container>
 		</div>
 	);
