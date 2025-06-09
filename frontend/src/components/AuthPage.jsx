@@ -50,11 +50,21 @@ export function AuthPage({ setCurrentPage }) {
 
 	function handleRegisterSubmit(e) {
 		e.preventDefault();
+		const usernameText = usernameRef.current.value;
+		if (usernameText.length < 3 || usernameText.length >= 15) {
+			return;
+		}
+		const passwordText = passwordRef.current.value;
+		if (passwordText.length < 3 || passwordText.length >= 15) {
+			return;
+		}
+
 		registerMutation.mutate({
 			name: usernameRef.current.value,
 			password: passwordRef.current.value,
 			role: roleRef.current.value,
 		});
+
 	}
 
 	return (
@@ -79,6 +89,7 @@ export function AuthPage({ setCurrentPage }) {
 						passwordRef={passwordRef}
 						roleRef={roleRef}
 					/>
+
 				)}
 			</Row>
 		</Container>

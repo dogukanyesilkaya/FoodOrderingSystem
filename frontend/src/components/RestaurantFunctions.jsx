@@ -36,7 +36,7 @@ export function LoginScreen({ handleLogin, setIsRegister, usernameRef, passwordR
 					<Button type="submit" variant="primary" className="mb-3 me-2">
 						Login
 					</Button>
-					<Button className="mb-3" variant="outline-secondary" onClick={() => setIsRegister(true)}>
+					<Button className="mb-3" variant="secondary" onClick={() => setIsRegister(true)}>
 						Register
 					</Button>
 				</Form>
@@ -119,10 +119,10 @@ export function ShowShoppingCart({ items, setItems }) {
 				<Offcanvas.Body>
 					{items.length > 0 ? (
 						items.map(item => (
-							<Card key={item.id} className="mb-2">
-								<Card.Header>
-									<Button onClick={() => removeFromItems(item.id)}>
-										remove
+							<Card key={item.id} className="mb-2 text-center">
+								<Card.Header style={{ display: 'flex', justifyContent: 'flex-end' }}>
+									<Button variant={"danger"} onClick={() => removeFromItems(item.id)}>
+										X
 									</Button>
 								</Card.Header>
 								<Card.Body>
@@ -139,7 +139,7 @@ export function ShowShoppingCart({ items, setItems }) {
 					<Alert show={items > 0} variant="secondary">
 						Total Cost: {totalPrice} TL
 					</Alert>
-					<Button variant="outline-secondary" onClick={() => setIsCompleted(true)} className="me-2">
+					<Button disabled={items <= 0} variant="info" onClick={() => setIsCompleted(true)} className="me-2">
 						Give Order
 					</Button>
 
@@ -193,7 +193,20 @@ export function ShowAddRestaurantModal(props) {
 
 	function handleSubmit(e) {
 		e.preventDefault()
-		console.log("form submitted")
+
+		const nameText = nameRef.current.value;
+		if (nameText.length < 3 || nameText.length >= 15) {
+			setIsError(true)
+			return;
+		}
+
+		const regionText = regionRef.current.value;
+		if (regionText === "Not Selected") {
+			setIsError(true)
+			return;
+		}
+		setIsError(false)
+
 		addRestaurantMutation.mutate({
 			deliveryTime: deliveryTimeRef.current.value,
 			name: nameRef.current.value,
@@ -205,9 +218,15 @@ export function ShowAddRestaurantModal(props) {
 	const [ratingValue, setRatingValue] = useState(5)
 	const [deliveryTimeValue, setDeliveryTimeValue] = useState(45)
 
+	const [isError, setIsError] = useState(false)
+
 	return (
 		<Modal
-			{...props} centered>
+			{...props} centered
+			style={{
+				border: isError ? "5px solid red" : "3px solid gray",
+				borderRadius: "12px",
+			}}>
 			<Modal.Header closeButton>Add Restaurant</Modal.Header>
 			<Modal.Body>
 				<Form onSubmit={handleSubmit}>
@@ -229,7 +248,7 @@ export function ShowAddRestaurantModal(props) {
 					<Form.Group>
 						<Form.Label>Region</Form.Label>
 						<Form.Select ref={regionRef} required >
-							<option value="Izmir">Select Region </option>
+							<option value="Not Selected">Select Region </option>
 							<option value="Izmir">Izmir</option>
 							<option value="Istanbul">Istanbul</option>
 							<option value="Adana">Adana</option>
@@ -313,6 +332,26 @@ export function ShowAddRestaurantMenuModal(props) {
 	function handleSubmit(e) {
 		e.preventDefault()
 		console.log("form submitted")
+
+		const nameText = nameRef.current.value;
+		if (nameText.length < 3 || nameText.length >= 15) {
+			setIsError(true)
+			return;
+		}
+
+		const descriptionText = nameRef.current.value;
+		if (descriptionText.length < 3 || descriptionText.length >= 25) {
+			setIsError(true)
+			return;
+		}
+
+		const categoryText = categoryRef.current.value;
+		if (categoryText === "Not Selected") {
+			setIsError(true)
+			return;
+		}
+
+		setIsError(false)
 		addRestaurantMenuMutation.mutate({
 			category: categoryRef.current.value,
 			description: descriptionRef.current.value,
@@ -324,15 +363,20 @@ export function ShowAddRestaurantMenuModal(props) {
 
 
 	const [priceValue, setPriceValue] = useState(120)
+	const [isError, setIsError] = useState(false)
 	return (
 		<Modal
-			{...modalProps} centered>
+			{...modalProps} centered
+			style={{
+				border: isError ? "5px solid red" : "3px solid gray",
+				borderRadius: "12px",
+			}}>
 			<Modal.Header closeButton>Add Restaurant</Modal.Header>
 			<Modal.Body>
 				<Form onSubmit={handleSubmit}>
 					<Form.Group>
 						<Form.Label>Name</Form.Label>
-						<Form.Control type="text" ref={nameRef} required />
+						<Form.Control type="text" minLength={3} ref={nameRef} required />
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Category</Form.Label>
